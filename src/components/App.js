@@ -1,14 +1,21 @@
 import React from 'react';
+import axios from 'axios';
 import Header from './Header';
 import ContestPreview from './ContestPreview';
 
 class App extends React.Component {
     state = { 
-        pageHeader: 'Naming Requests!'
+        pageHeader: 'Naming Requests!',
+        contests: this.props.initialContests
     };
 
     componentDidMount() {
-        console.log('did Mount');
+        axios.get('/api/contests').then(res => {
+            console.log(res);
+            this.setState({
+                contests: res.data.contests
+            });
+        }).catch(console.error);
     }
     componentWillUnmount() {
         console.log('did Unmount');
@@ -18,8 +25,8 @@ class App extends React.Component {
             <div className='App'>
                 <Header message={this.state.pageHeader}/>
                 <div>
-                    {this.props.contests.map(contest => 
-                        <ContestPreview {...contest}/>
+                    {this.state.contests.map(contest => 
+                        <ContestPreview key={contest.id} {...contest}/>
                     )}
                 </div>
             </div>
